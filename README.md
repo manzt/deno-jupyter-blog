@@ -1,13 +1,14 @@
 # jupyter blog
 
-
 Ensure you have the Jupyter kernel installed
 
 ```sh
 deno jupyter --install
 ```
 
-For **VS Code**, you should be able to open the notebook directly (see [Deno docs](https://docs.deno.com/runtime/reference/cli/jupyter/) to enable the kernel).
+For **VS Code**, you should be able to open the notebook directly (see
+[Deno docs](https://docs.deno.com/runtime/reference/cli/jupyter/) to enable the
+kernel).
 
 ```sh
 code blog.ipynb

@@ -1,11 +1,8 @@
 {
-	"lock": false,
-	"fmt": {
-		"useTabs": true
-	},
-	"lint": {
-		"rules": {
-			"exclude": ["prefer-const"]
-		}
-	}
+  "lock": false,
+  "lint": {
+    "rules": {
+      "exclude": ["prefer-const"]
+    }
+  }
 }
