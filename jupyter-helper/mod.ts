@@ -1,7 +1,6 @@
 // @ts-types="@types/react-dom/server";
 import * as ReactDOM from "react-dom/server";
 import * as anywidget from "@anywidget/deno";
-import * as base64 from "@std/encoding/base64";
 import * as linkedom from "linkedom";
 
 /**
@@ -42,7 +41,6 @@ export function render(
 // Widgets
 
 // Types for frontend libs included below
-declare const $base64: typeof import("@std/encoding/base64");
 declare const $agGrid: typeof import("ag-grid-community");
 declare const $flech: typeof import("@uwdata/flechette");
 declare const $mosaic: typeof import("@uwdata/mosaic-core");
@@ -65,23 +63,21 @@ declare const $quak: typeof import("@manzt/quak");
  * @returns A "live" anywidget instance
  */
 export function agGrid(df: import("nodejs-polars").DataFrame): anywidget.Model<{
-  ipc: string;
+  ipc: Uint8Array;
 }> {
   return anywidget.widget({
     state: {
-      // TODO: Jupyter Widgets support binary data, but I'm not sure if it's implemented in Deno yet
-      ipc: base64.encodeBase64(df.writeIPC()),
+      ipc: df.writeIPC(),
       _css: "https://esm.sh/ag-grid-community@33.0.4/styles/ag-grid.css",
     },
     imports: `
 import * as $agGrid from "https://esm.sh/ag-grid-community@33.0.4";
 import * as $flech from "https://esm.sh/@uwdata/flechette@1.1.2";
-import * as $base64 from "https://esm.sh/jsr/@std/encoding@1.0.7/base64";
     `,
     render: ({ model, el }) => {
       $agGrid.ModuleRegistry.registerModules([$agGrid.AllCommunityModule]);
       el.style.height = "400px";
-      let bytes = $base64.decodeBase64(model.get("ipc"));
+      let bytes = new Uint8Array(model.get("ipc").buffer);
       let table = $flech.tableFromIPC(bytes);
       $agGrid.createGrid(el, {
         columnDefs: table.names.map((field) => ({ field })),
@@ -110,13 +106,11 @@ import * as $base64 from "https://esm.sh/jsr/@std/encoding@1.0.7/base64";
  */
 export function quak(
   df: import("nodejs-polars").DataFrame,
-): anywidget.Model<{ parquet: string }> {
+): anywidget.Model<{ parquet: Uint8Array }> {
   return anywidget.widget({
-    // TODO: Jupyter Widgets support binary data, but I'm not sure if it's implemented in Deno yet
-    state: { parquet: base64.encodeBase64(df.writeParquet()) },
+    state: { parquet: df.writeParquet() },
     imports: `
 import * as $mosaic from "https://esm.sh/@uwdata/mosaic-core@~0.11?bundle";
-import * as $base64 from "https://esm.sh/jsr/@std/encoding@1.0.7/base64";
 import * as $quak from "https://esm.sh/jsr/@manzt/quak@0.0.2";
     `,
     render: async ({ model, el }) => {
@@ -125,7 +119,7 @@ import * as $quak from "https://esm.sh/jsr/@manzt/quak@0.0.2";
       let coordinator = new $mosaic.Coordinator();
       coordinator.databaseConnector(connector);
 
-      let bytes = $base64.decodeBase64(model.get("parquet"));
+      let bytes = new Uint8Array(model.get("parquet").buffer);
       await db.registerFileBuffer("df.parquet", bytes);
       await coordinator.exec([
         `CREATE OR REPLACE TABLE "df" AS SELECT * FROM "df.parquet"`,
