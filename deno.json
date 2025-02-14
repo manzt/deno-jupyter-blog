@@ -1,5 +1,5 @@
 {
-  "lock": false,
+  "workspace": ["./jupyter-helper"],
   "lint": {
     "rules": {
       "exclude": ["prefer-const"]
