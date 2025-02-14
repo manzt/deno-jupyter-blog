@@ -1,6 +1,7 @@
 // @ts-types="@types/react-dom/server";
 import * as ReactDOM from "react-dom/server";
 import * as anywidget from "@anywidget/deno";
+import * as base64 from "@std/encoding/base64";
 import * as linkedom from "linkedom";
 
 import type * as pl from "nodejs-polars";
@@ -42,6 +43,7 @@ export function render(reactNode: React.ReactNode): Deno.jupyter.Displayable {
 // Widgets
 
 // Types for frontend libs included below
+declare const $base64: typeof import("@std/encoding/base64");
 declare const $agGrid: typeof import("ag-grid-community");
 declare const $flech: typeof import("@uwdata/flechette");
 declare const $mosaic: typeof import("@uwdata/mosaic-core");
@@ -63,22 +65,23 @@ declare const $quak: typeof import("@manzt/quak");
  * @param df The DataFrame to display
  * @returns A "live" anywidget instance
  */
-export function agGrid(df: pl.DataFrame): anywidget.Model<{
-  ipc: Uint8Array;
-}> {
+export function agGrid(
+  df: pl.DataFrame,
+): anywidget.Model<unknown> {
   return anywidget.widget({
     state: {
-      ipc: df.writeIPC(),
+      ipc: base64.encodeBase64(df.writeIPC()),
       _css: "https://esm.sh/ag-grid-community@33.0.4/styles/ag-grid.css",
     },
     imports: `
 import * as $agGrid from "https://esm.sh/ag-grid-community@33.0.4";
 import * as $flech from "https://esm.sh/@uwdata/flechette@1.1.2";
+import * as $base64 from "https://esm.sh/jsr/@std/encoding@1.0.7/base64";
     `,
     render: ({ model, el }) => {
       $agGrid.ModuleRegistry.registerModules([$agGrid.AllCommunityModule]);
       el.style.height = "400px";
-      let bytes = new Uint8Array(model.get("ipc").buffer);
+      let bytes = $base64.decodeBase64(model.get("ipc"));
       let table = $flech.tableFromIPC(bytes);
       $agGrid.createGrid(el, {
         columnDefs: table.names.map((field) => ({ field })),
@@ -107,12 +110,13 @@ import * as $flech from "https://esm.sh/@uwdata/flechette@1.1.2";
  */
 export function quak(
   df: pl.DataFrame,
-): anywidget.Model<{ parquet: Uint8Array }> {
+): anywidget.Model<unknown> {
   return anywidget.widget({
-    state: { parquet: df.writeParquet() },
+    state: { parquet: base64.encodeBase64(df.writeParquet()) },
     imports: `
 import * as $mosaic from "https://esm.sh/@uwdata/mosaic-core@~0.11?bundle";
 import * as $quak from "https://esm.sh/jsr/@manzt/quak@0.0.2";
+import * as $base64 from "https://esm.sh/jsr/@std/encoding@1.0.7/base64";
     `,
     render: async ({ model, el }) => {
       let connector = $mosaic.wasmConnector();
@@ -120,7 +124,7 @@ import * as $quak from "https://esm.sh/jsr/@manzt/quak@0.0.2";
       let coordinator = new $mosaic.Coordinator();
       coordinator.databaseConnector(connector);
 
-      let bytes = new Uint8Array(model.get("parquet").buffer);
+      let bytes = $base64.decodeBase64(model.get("parquet"));
       await db.registerFileBuffer("df.parquet", bytes);
       await coordinator.exec([
         `CREATE OR REPLACE TABLE "df" AS SELECT * FROM "df.parquet"`,
