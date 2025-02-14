@@ -2,6 +2,13 @@
 import * as ReactDOM from "react-dom/server";
 import * as anywidget from "@anywidget/deno";
 import * as base64 from "@std/encoding/base64";
+import * as linkedom from "linkedom";
+
+/**
+ * A parsed HTML document for rendering Observable Plot's with Deno.
+ */
+export const document: globalThis.Document =
+  linkedom.parseHTML("<html></html>").document;
 
 /**
  * Renders a React node as an HTML string for display in Jupyter.
@@ -12,7 +19,7 @@ import * as base64 from "@std/encoding/base64";
  * @example Usage
  * ```tsx
  * import * as React from "npm:react";
- * import { render } from "jsr:@manzt/jupyter-helper";
+ * import { render, document } from "jsr:@manzt/jupyter";
  *
  * render(<h1>Hello, Jupyter!</h1>);
  * ```
@@ -31,6 +38,8 @@ export function render(
     },
   };
 }
+
+// Widgets
 
 // Types for frontend libs included below
 declare const $base64: typeof import("@std/encoding/base64");
