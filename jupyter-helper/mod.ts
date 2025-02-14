@@ -3,6 +3,9 @@ import * as ReactDOM from "react-dom/server";
 import * as anywidget from "@anywidget/deno";
 import * as linkedom from "linkedom";
 
+import type * as pl from "nodejs-polars";
+import type * as React from "react";
+
 /**
  * A parsed HTML document for rendering Observable Plot's with Deno.
  */
@@ -26,9 +29,7 @@ export const document: globalThis.Document =
  * @param reactNode - The React node to render.
  * @returns A Jupyter-compatible display object.
  */
-export function render(
-  reactNode: import("react").ReactNode,
-): Deno.jupyter.Displayable {
+export function render(reactNode: React.ReactNode): Deno.jupyter.Displayable {
   return {
     [Deno.jupyter.$display]() {
       return {
@@ -62,7 +63,7 @@ declare const $quak: typeof import("@manzt/quak");
  * @param df The DataFrame to display
  * @returns A "live" anywidget instance
  */
-export function agGrid(df: import("nodejs-polars").DataFrame): anywidget.Model<{
+export function agGrid(df: pl.DataFrame): anywidget.Model<{
   ipc: Uint8Array;
 }> {
   return anywidget.widget({
@@ -105,7 +106,7 @@ import * as $flech from "https://esm.sh/@uwdata/flechette@1.1.2";
  * @returns A "live" anywidget instance
  */
 export function quak(
-  df: import("nodejs-polars").DataFrame,
+  df: pl.DataFrame,
 ): anywidget.Model<{ parquet: Uint8Array }> {
   return anywidget.widget({
     state: { parquet: df.writeParquet() },
