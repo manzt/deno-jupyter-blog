@@ -11,21 +11,18 @@ For **VS Code**, you should be able to open the notebook directly (see
 kernel).
 
 ```sh
-code blog.ipynb
+code post.ipynb
 ```
 
-For **Jupyter Lab**, there is additional setup:
-
-Please ensure to have [uv](https://github.com/astral-sh/uv) installed.
+For **Jupyter Lab**, please ensure to have
+[uv](https://github.com/astral-sh/uv) installed. Then, launch the notebook
+using the [juv](https://github.com/manzt/juv) CLI:
 
 ```sh
-uv venv
-source .venv/bin/activate
-# install anywidget's frontend for the Jupyter enviroment (not required for VS Code)
-deno run jsr:@anywidget/deno/install
-uv pip install jupyterlab # jupyterlab-vim
+uvx juv run --with=anywidget --jupyter=lab post.ipynb
 ```
 
-```sh
-uv run jupyter lab
-```
+The `--with=anywidget` flag ensures JupyterLab loads the required front-end
+extension for interactive [anywidgets](https://github.com/manzt/anywidget)
+(e.g. agrid, quak). This isn't needed in VS Code, where these assets load from
+a CDN instead of the local file system.
