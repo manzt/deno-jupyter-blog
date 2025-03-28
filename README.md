@@ -14,15 +14,15 @@ kernel).
 code post.ipynb
 ```
 
-For **Jupyter Lab**, please ensure to have
-[uv](https://github.com/astral-sh/uv) installed. Then, launch the notebook
-using the [juv](https://github.com/manzt/juv) CLI:
+For **Jupyter Lab**, please ensure to have [uv](https://github.com/astral-sh/uv)
+installed. Then, launch the notebook using the
+[juv](https://github.com/manzt/juv) CLI:
 
 ```sh
 uvx juv run --with=anywidget --jupyter=lab post.ipynb
 ```
 
 The `--with=anywidget` flag ensures JupyterLab loads the required front-end
-extension for interactive [anywidgets](https://github.com/manzt/anywidget)
-(e.g. agrid, quak). This isn't needed in VS Code, where these assets load from
-a CDN instead of the local file system.
+extension for interactive [anywidgets](https://github.com/manzt/anywidget) (e.g.
+agrid, quak). This isn't needed in VS Code, where these assets load from a CDN
+instead of the local file system.
