@@ -1,13 +1,13 @@
 {
   "name": "@manzt/jupyter-helper",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "license": "MIT",
   "exports": "./mod.ts",
   "compilerOptions": {
     "lib": ["deno.ns", "deno.unstable", "dom", "dom.iterable", "esnext"]
   },
   "imports": {
-    "@anywidget/deno": "jsr:@anywidget/deno@~0.2.2",
+    "@anywidget/deno": "jsr:@anywidget/deno@~0.2.3",
     "@manzt/quak": "jsr:@manzt/quak@^0.0.2",
     "@std/encoding": "jsr:@std/encoding@^1.0.7",
     "@types/react": "npm:@types/react@^19.0.8",
