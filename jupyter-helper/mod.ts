@@ -75,7 +75,7 @@ export function agGrid(
     },
     imports: `
 import * as $agGrid from "https://esm.sh/ag-grid-community@33.0.4";
-import * as $flech from "https://esm.sh/@uwdata/flechette@1.1.2";
+import * as $flech from "https://esm.sh/@uwdata/flechette@2.1.0";
 import * as $base64 from "https://esm.sh/jsr/@std/encoding@1.0.7/base64";
     `,
     render: ({ model, el }) => {
@@ -114,8 +114,8 @@ export function quak(
   return anywidget.widget({
     state: { parquet: base64.encodeBase64(df.writeParquet()) },
     imports: `
-import * as $mosaic from "https://esm.sh/@uwdata/mosaic-core@~0.11?bundle";
-import * as $quak from "https://esm.sh/jsr/@manzt/quak@0.0.2";
+import * as $mosaic from "https://esm.sh/@uwdata/mosaic-core@~0.18?bundle";
+import * as $quak from "https://esm.sh/jsr/@manzt/quak@0.1.1";
 import * as $base64 from "https://esm.sh/jsr/@std/encoding@1.0.7/base64";
     `,
     render: async ({ model, el }) => {
